@@ -1,12 +1,15 @@
 package com.example.mac.akiba;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -29,9 +32,16 @@ public class ReadSms extends ListActivity {
         if (c.moveToFirst()) {
             for (int i = 0; i < c.getCount(); i++) {
                 String address = c.getString(c.getColumnIndex("address"));
+                String body = c.getString(c.getColumnIndex("body"));
                 if(address.equalsIgnoreCase("m-shwari")){
                     SMSData sms= new SMSData();
-                    sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
+                    String[] separated = body.split("M-Shwari balance is Ksh.");
+//                    if(count)
+                    String[] separated2 = separated[1].split(" ");
+//                    sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
+                    //Log.d(separated[1]);
+                    Log.d("this is my array", "arr: " + Arrays.toString(separated2));
+                    sms.setBody(Arrays.toString(separated));
                     sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
                     smsList.add(sms);
                 }
