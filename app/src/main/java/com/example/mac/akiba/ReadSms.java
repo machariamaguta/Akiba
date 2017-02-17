@@ -28,10 +28,13 @@ public class ReadSms extends ListActivity {
         // Read the sms data and store it in the list
         if (c.moveToFirst()) {
             for (int i = 0; i < c.getCount(); i++) {
-                SMSData sms = new SMSData();
-                sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
-                sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
-                smsList.add(sms);
+                String address = c.getString(c.getColumnIndex("address"));
+                if(address.equalsIgnoreCase("m-shwari")){
+                    SMSData sms= new SMSData();
+                    sms.setBody(c.getString(c.getColumnIndexOrThrow("body")).toString());
+                    sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
+                    smsList.add(sms);
+                }
 
                 c.moveToNext();
             }

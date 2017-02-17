@@ -40,12 +40,8 @@ public class SMSListAdapter extends ArrayAdapter<SMSData> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(R.layout.read_sms, parent, false);
-        //if(smsList.get(position).getNumber() == 'MSHWARI'){
             TextView senderNumber = (TextView) rowView.findViewById(R.id.smsNumberText);
             senderNumber.setText(smsList.get(position).getNumber());
-
-        //}
-
         return rowView;
     }
 
