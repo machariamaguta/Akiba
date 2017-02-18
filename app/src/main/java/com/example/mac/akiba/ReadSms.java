@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import android.app.ListActivity;
 import android.database.Cursor;
@@ -18,9 +19,12 @@ import android.widget.Toast;
 import com.akiba.data.model.Message;
 import com.akiba.data.model.RegisterPostData;
 import com.akiba.data.model.SmsModel;
+import com.akiba.data.realm.User;
 import com.akiba.data.remote.APIService;
 import com.akiba.data.remote.ApiUtils;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,11 +37,13 @@ import rx.schedulers.Schedulers;
 public class ReadSms extends ListActivity {
     private TextView mResponseTv;
     private APIService mAPIService;
-
+    Realm realm;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mResponseTv = (TextView) findViewById(R.id.tv_response);
         mAPIService = ApiUtils.getAPIService();
+        Realm.init(this);
+        realm=Realm.getDefaultInstance();
 
         List<SMSData> smsList = new ArrayList<SMSData>();
         List<Message> messages = new ArrayList<Message>();
@@ -47,13 +53,16 @@ public class ReadSms extends ListActivity {
         startManagingCursor(c);
 
         // Read the sms data and store it in the list
+
         if (c.moveToFirst()) {
+            Integer id;
             for (int i = 0; i < c.getCount(); i++) {
                 String address = c.getString(c.getColumnIndex("address"));
                 String body = c.getString(c.getColumnIndex("body"));
                 String person = c.getString(c.getColumnIndex("person"));
                 String date = c.getString(c.getColumnIndex("date"));
                 String type = c.getString(c.getColumnIndex("type"));
+
                 if(address.equalsIgnoreCase("m-shwari")){
                     SMSData sms= new SMSData();
                     Message message = new Message();
@@ -72,6 +81,11 @@ public class ReadSms extends ListActivity {
                     sms.setNumber(c.getString(c.getColumnIndexOrThrow("address")).toString());
                     smsList.add(sms);
                     messages.add(message);
+                    realm.beginTransaction();
+                        User user = realm.createObject(User.class, UUID.randomUUID().toString());
+                        user.setNama(address);
+                        user.setAlamat(body);
+                        realm.commitTransaction();
 
                 }
 
